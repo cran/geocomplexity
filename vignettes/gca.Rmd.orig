@@ -1,0 +1,108 @@
+---
+title: "GeoComplexity Application"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GeoComplexity Application}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "##",
+  fig.path = "man/figures/gca/"
+)
+```
+
+# Improving Model Fitting Utilizing Geographical Complexity in Spatial Regression Tasks
+
+```{r}
+library(sf)
+library(tidyverse)
+library(geocomplexity)
+
+econineq = sf::read_sf(system.file('extdata/econineq.gpkg',package = 'geocomplexity'))
+wt1 = sdsfun::spdep_contiguity_swm(econineq,queen = TRUE,style = 'B')
+```
+
+
+### Incorporating the geographical complexity of each independent variable into the model's explanatory variables
+
+```{r mlr}
+mlr1 = lm(Gini ~ ., data = st_drop_geometry(econineq))
+
+gc1 = geocd_vector(dplyr::select(econineq,-Gini),
+                   wt = wt1, returnsf = FALSE)
+mlr2 = lm(Gini ~ ., data = st_drop_geometry(econineq) %>%
+            dplyr::bind_cols(gc1))
+
+eval_mlr = \(models,mnames){
+  R2 = purrr::map_dbl(models,\(m) summary(m)$r.squared)
+  AdjR2 = purrr::map_dbl(models,\(m) summary(m)$adj.r.squared)
+  t_eval = tibble::tibble(Model = mnames,
+                          R2,AdjR2)
+  return(t_eval)
+}
+
+eval_mlr(list(mlr1,mlr2),
+         c("MLR","GCMLR")) |>
+  pander::pander()
+```
+
+### Using spatial weight matrices that account for geographical complexity in spatial regression
+
+```{r slm}
+library(spatialreg)
+
+wtl1 = spdep::mat2listw(wt1)
+wt2 = geocs_swm(econineq,wt1,style = "W")
+wtl2 = spdep::mat2listw(wt2,zero.policy = TRUE)
+
+slm1 = lagsarlm(Gini ~ ., data = st_drop_geometry(econineq),
+                listw = wtl1, Durbin = FALSE)
+slm2 = lagsarlm(Gini ~ ., data = st_drop_geometry(econineq),
+                listw = wtl2, Durbin = FALSE)
+sem1 = errorsarlm(Gini ~ ., data = st_drop_geometry(econineq),
+                  listw = wtl1, Durbin = FALSE)
+sem2 = errorsarlm(Gini ~ ., data = st_drop_geometry(econineq),
+                  listw = wtl2, Durbin = FALSE)
+
+eval_slm = \(models,mnames){
+  evt = tibble(Model = mnames,
+               AIC = purrr::map_dbl(models,AIC),
+               BIC = purrr::map_dbl(models,BIC),
+               logLik = purrr::map_dbl(models,logLik))
+  return(evt)
+}
+
+eval_slm(list(slm1,slm2,sem1,sem2),
+         c("SLM","GCSLM","SEM","GCSEM")) |>
+  pander::pander()
+```
+
+### geographical complexity-geographically weighted regression
+
+```{r gcgwr}
+g1 = GWmodel3::gwr_basic(
+  formula = Gini ~ .,
+  data = econineq,
+  bw = "AIC",
+  adaptive = TRUE
+)
+g1
+g2 = gwr_geoc(formula = Gini ~ .,
+              data = econineq,
+              bw = "AIC",
+              adaptive = TRUE)
+g2
+
+tibble::tibble(
+  Model = c("GWR","GeoCGWR"),
+  R2 = c(g1$diagnostic$RSquare,g2$diagnostic$R2),
+  AdjR2 = c(g1$diagnostic$RSquareAdjust,g2$diagnostic$R2_Adj),
+  AICc = c(g1$diagnostic$AICc,g2$diagnostic$AICc),
+  RMSE = c(sqrt(g1$diagnostic$RSS / nrow(econineq)),g2$diagnostic$RMSE)
+)|>
+  pander::pander()
+```
