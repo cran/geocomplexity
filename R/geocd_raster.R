@@ -25,7 +25,7 @@
 #' geocomplexity. The selection of the method can be made from any one of the three options:
 #' `moran`, `spvar` or `entropy`. Default is `moran`.
 #'
-#' @return A SpatRaster object
+#' @return A `SpatRaster` object
 #' @export
 #'
 #' @examples
