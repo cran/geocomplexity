@@ -1,6 +1,6 @@
-f3a110eb6f310524da8c26f01b180fde *DESCRIPTION
+755b4afc57f44e265173a508fedc28b0 *DESCRIPTION
 f9c24cf121af5a1393fc5a158d3305a8 *NAMESPACE
-aaa80ba2084805c1526e779b02692017 *NEWS.md
+95a3ee8626702d77ad56ad5be4382216 *NEWS.md
 bd18c9ee5a3c618c1c87956492bec1c0 *R/RcppExports.R
 7849169626f7d3ff77c8f5dd656afc22 *R/geoc_swm.R
 d5deee9b86838313898796003c1f4752 *R/geocd_raster.R
@@ -12,8 +12,9 @@ d8fb3f661f7b1b6d8a52b2d482732020 *R/globals.R
 1fd828ef8fbb29e0ab7f0e8c173cd11e *R/gwr_geoc.R
 e652751785c4c90ac4747bd4b40cd78a *R/pipe.R
 2c48ae9d7295e9cf32e92eb2044c1011 *R/zzz.R
-ddffab3e2a60d9898b986dada4c93359 *README.md
-e082da00e2fd05d00e58b938899fe8ad *build/vignette.rds
+489974cf90eb8b853ab15910d5a768e0 *README.md
+f6ea640eead06f888828b4dd46b423a7 *build/vignette.rds
+70acb77a8ba81ee7dcb07c1e1eb39809 *inst/CITATION
 de4ad03ea7f7aea8b29e232cff921be5 *inst/doc/gca.Rmd
 ceadb12914a024b2148d4dec0126c96f *inst/doc/gca.html
 30ae04398ecf82b460fb0e9b3182a361 *inst/doc/gcc.Rmd
@@ -21,7 +22,7 @@ ceadb12914a024b2148d4dec0126c96f *inst/doc/gca.html
 9c3acd43e613b70d3b063c0c24732f67 *inst/extdata/econineq.gpkg
 90fe08b9928459012615361870b07ce7 *man/figures/gcc/plot_geocd-1.png
 1b2c84b1f22487dfe7385081da74646c *man/figures/gcc/plot_geocs-1.png
-3759a698e3440ad781eb0cf6875da505 *man/figures/logo.png
+638784265b885f544a195963d82415cc *man/figures/logo.png
 9d92467eb57e86d98e0761b6cfe86cf7 *man/figures/logo_version1.png
 142c6fd88f5a43e0431ab78d99778df5 *man/figures/logo_version2.png
 5fb06ebd5b3a4eff9938a4304e2a6f3a *man/geocd_raster.Rd
